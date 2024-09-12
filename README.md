@@ -1,8 +1,8 @@
 <div align="center">
 
-![Kulala Logo](logo.svg)
+![Kikao Logo](logo.svg)
 
-# kulala.nvim
+# Kikao.nvim
 
 ![Lua](https://img.shields.io/badge/Made%20with%20Lua-blueviolet.svg?style=for-the-badge&logo=lua)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/mistweaverco/kikao.nvim?style=for-the-badge)](https://github.com/mistweaverco/kikao.nvim/releases/latest)
