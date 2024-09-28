@@ -11,7 +11,11 @@ local vim_leave_cb = function(session_file_path)
   vim.cmd("mksession! " .. session_file_path)
 end
 
-local vim_enter_cb = function(project_dir_matchers, session_file_path, ps)
+local vim_enter_cb = function(data, project_dir_matchers, session_file_path, ps)
+  if data.file and vim.fn.filereadable(data.file) == 1 then
+    return
+  end
+
   local dir = vim.fn.getcwd()
 
   for _, root in ipairs(project_dir_matchers) do
@@ -39,8 +43,8 @@ M.setup = function(config)
   end
 
   vim.api.nvim_create_autocmd("VimEnter", {
-    callback = function()
-      vim_enter_cb(config.project_dir_matchers, session_file_path, ps)
+    callback = function(data)
+      vim_enter_cb(data, config.project_dir_matchers, session_file_path, ps)
     end,
     group = augroup,
     nested = true,
