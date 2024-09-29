@@ -18,7 +18,10 @@ Kikao is swahili for "session".
 It is a simple plugin that allows you to automatically save and
 restore your session when you open and close neovim.
 
-<p></p>
+It basically saves the state of your editor when you close it and
+restores it when you open it.
+
+So you have your window layout and buffers just as you left them.
 
 </div>
 
@@ -47,6 +50,11 @@ Via [lazy.nvim](https://github.com/folke/lazy.nvim):
     -- The path to the session file
     -- If not provided, the session file will be stored in {{PROJECT_DIR}}/.nvim/session.vim
     session_file_path = nil,
+    -- Don't start or restore a session if the file is in the deny_on_path list
+    -- and you opened that file directly
+    deny_on_path = {
+      ".git/COMMIT_EDITMSG",
+    },
   }
 },
 ```

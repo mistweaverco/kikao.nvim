@@ -11,14 +11,15 @@ local vim_leave_cb = function(session_file_path)
   vim.cmd("mksession! " .. session_file_path)
 end
 
-local vim_enter_cb = function(data, project_dir_matchers, session_file_path, ps)
-  if data.file and vim.fn.filereadable(data.file) == 1 then
+local vim_enter_cb = function(data, config, session_file_path, ps)
+  local file_path_rel = vim.fn.fnamemodify(data.file, ":~:.:p")
+  if data.file and vim.tbl_contains(config.deny_on_path, file_path_rel) then
     return
   end
 
   local dir = vim.fn.getcwd()
 
-  for _, root in ipairs(project_dir_matchers) do
+  for _, root in ipairs(config.project_dir_matchers) do
     if vim.fn.isdirectory(dir .. ps .. root) == 1 then
       save_session = true
       break
@@ -28,6 +29,9 @@ local vim_enter_cb = function(data, project_dir_matchers, session_file_path, ps)
   if save_session then
     if vim.fn.filereadable(session_file_path) == 1 then
       vim.cmd("source " .. session_file_path)
+      if data.file then
+        vim.cmd("e " .. data.file)
+      end
     end
   end
 end
@@ -44,7 +48,7 @@ M.setup = function(config)
 
   vim.api.nvim_create_autocmd("VimEnter", {
     callback = function(data)
-      vim_enter_cb(data, config.project_dir_matchers, session_file_path, ps)
+      vim_enter_cb(data, config, session_file_path, ps)
     end,
     group = augroup,
     nested = true,
