@@ -15,6 +15,8 @@ A minimal session management plugin for your favorite editor.
 
 Kikao is swahili for "session".
 
+</div>
+
 It is a simple plugin that allows you to automatically save and
 restore your session when you open and close neovim.
 
@@ -22,8 +24,6 @@ It basically saves the state of your editor when you close it and
 restores it when you open it.
 
 So you have your window layout and buffers just as you left them.
-
-</div>
 
 ## Requirements
 
