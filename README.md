@@ -7,7 +7,7 @@
 ![Lua](https://img.shields.io/badge/Made%20with%20Lua-blueviolet.svg?style=for-the-badge&logo=lua)
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/mistweaverco/kikao.nvim?style=for-the-badge)](https://github.com/mistweaverco/kikao.nvim/releases/latest)
 
-[Requirements](#requirements) • [Install](#install) • [Configuration](#configuration) • [How](#how)
+[What](#what) • [Requirements](#requirements) • [Install](#install) • [Configuration](#configuration) • [How](#how)
 
 <p></p>
 
@@ -17,7 +17,9 @@ Kikao is swahili for "session".
 
 </div>
 
-It is a simple plugin that allows you to automatically save and
+## What
+
+It's a simple plugin that allows you to automatically save and
 restore your session when you open and close neovim.
 
 It basically saves the state of your editor when you close it and
