@@ -2,7 +2,7 @@ local AuCommands = require("kikao.config.aucommands")
 local M = {}
 
 M.defaults = {
-  project_dir_matchers = { ".git", ".hg", ".bzr", ".svn" },
+  project_dir_matchers = { ".editor" },
   session_file_path = nil,
   deny_on_path = {
     ".git/COMMIT_EDITMSG",

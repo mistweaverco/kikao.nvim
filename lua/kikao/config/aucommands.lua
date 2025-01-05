@@ -41,7 +41,7 @@ M.setup = function(config)
   local augroup = vim.api.nvim_create_augroup("KikaoSession", { clear = true })
   local session_file_path = config.session_file_path
   if session_file_path == nil then
-    session_file_path = vim.fn.getcwd() .. ps .. ".nvim" .. ps .. "session.vim"
+    session_file_path = vim.fn.getcwd() .. ps .. ".editor" .. ps .. "neovim-session.vim"
   else
     session_file_path = session_file_path:gsub("{{PROJECT_DIR}}", vim.fn.getcwd())
   end

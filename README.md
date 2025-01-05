@@ -48,9 +48,9 @@ Via [lazy.nvim](https://github.com/folke/lazy.nvim):
 { 'mistweaverco/kikao.nvim',
   opts = {
     -- Checks for the existence of the project root by checking for these directories
-    project_dir_matchers = { ".git", ".hg", ".bzr", ".svn" },
+    project_dir_matchers = { ".editor" },
     -- The path to the session file
-    -- If not provided, the session file will be stored in {{PROJECT_DIR}}/.nvim/session.vim
+    -- If not provided, the session file will be stored in {{PROJECT_DIR}}/.editor/neovim-session.vim
     session_file_path = nil,
     -- Don't start or restore a session if the file is in the deny_on_path list
     -- and you opened that file directly
@@ -59,6 +59,13 @@ Via [lazy.nvim](https://github.com/folke/lazy.nvim):
     },
   }
 },
+```
+
+Create a `.editor` directory in your project root and
+add the following to your `.gitignore` file:
+
+```
+.editor/neovim-session.vim
 ```
 
 ## How
