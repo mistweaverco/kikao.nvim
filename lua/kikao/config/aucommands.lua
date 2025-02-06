@@ -28,9 +28,20 @@ local vim_enter_cb = function(data, config, session_file_path, ps)
 
   if save_session then
     if vim.fn.filereadable(session_file_path) == 1 then
-      vim.cmd("source " .. session_file_path)
-      if data.file then
-        vim.cmd("e " .. data.file)
+      -- Check if the session file is not empty
+      local session_file_size = vim.fn.getfsize(session_file_path)
+      if session_file_size > 0 then
+        -- Try to source the session file safely
+        local ok, err = pcall(function()
+          vim.cmd("silent! source " .. session_file_path)
+        end)
+        if not ok then
+          vim.notify("Failed to restore session: " .. err, vim.log.levels.WARN)
+        end
+
+        if data.file then
+          vim.cmd("e " .. data.file)
+        end
       end
     end
   end
@@ -48,7 +59,10 @@ M.setup = function(config)
 
   vim.api.nvim_create_autocmd("VimEnter", {
     callback = function(data)
-      vim_enter_cb(data, config, session_file_path, ps)
+      -- Call the session restoration function
+      pcall(function()
+        vim_enter_cb(data or {}, config, session_file_path, ps)
+      end)
     end,
     group = augroup,
     nested = true,
