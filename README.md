@@ -45,13 +45,21 @@ Via [lazy.nvim](https://github.com/folke/lazy.nvim):
 ## Configuration
 
 ```lua
-{ 'mistweaverco/kikao.nvim',
+{
+  'mistweaverco/kikao.nvim',
   opts = {
     -- Checks for the existence of the project root by checking for these directories
-    project_dir_matchers = { ".editor" },
+    -- If none are found, the session won't be loaded or saved
+    project_dir_matchers = { ".git", ".svn", ".jj", ".hg" },
     -- The path to the session file
-    -- If not provided, the session file will be stored in {{PROJECT_DIR}}/.editor/neovim-session.vim
+    -- If not provided, the session file will be stored in:
+    -- ~/.cache/nvim/kikao.nvim/{{SHA256_PROJECT_DIR}}/session.vim
+    --
+    -- If you want to store the session file in the project root,
+    -- you can set this to "{{PROJECT_DIR}}/.session.vim"
     session_file_path = nil,
+    -- The name of the session file
+    session_file_name = "session.vim",
     -- Don't start or restore a session if the file is in the deny_on_path list
     -- and you opened that file directly
     deny_on_path = {
@@ -61,17 +69,25 @@ Via [lazy.nvim](https://github.com/folke/lazy.nvim):
 },
 ```
 
-Create a `.editor` directory in your project root and
-add the following to your `.gitignore` file:
-
-```
-.editor/neovim-session.vim
-```
-
 ## How
 
 How does it work?
 
-- When you open neovim, kikao will check if there is a session file in the project root.
-- If there is a session file, it will be loaded.
+- When you open neovim, kikao will for an existing session file for the project.
+- If there is a session file, it'll be loaded.
 - When you close neovim, kikao will save the session file in the project root.
+
+Sessions are stored in a directory structure based on the SHA256 hash of the
+project root path.
+
+For example:
+
+```
+~/.cache/nvim/kikao.nvim/3a7bd3c8e5f6f7e8f9e0d1c2b3a4b5c6d7e8f9a0b1c2d3e4f5g6h7i8j9k0l1m2/session.vim
+```
+
+Additionally, kikao saves metadata about the session in a separate file called
+`metadata.json` in the same directory as the session file.
+
+This metadata includes:
+- The project root path as (`project_dir`)

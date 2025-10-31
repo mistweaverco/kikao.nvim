@@ -1,67 +1,66 @@
+local Utils = require("kikao.config.utils")
 local M = {}
 
-local save_session = false
-
-local vim_leave_cb = function(session_file_path)
-  if save_session == false then
-    return
+local vim_leave_cb = function(config, session_file_path, project_dir)
+  local session_file = Utils.join_paths(session_file_path, config.session_file_name)
+  vim.cmd("mksession! " .. session_file)
+  -- INFO:
+  -- Could be empty if session_file_path is managed by user
+  if project_dir then
+    -- Save project metadata
+    -- This is used to identify the project directory
+    -- because we might want to have a session picker in the future
+    Utils.write_project_metadata(project_dir, { project_dir = project_dir })
   end
-  local sessiondir = vim.fn.fnamemodify(session_file_path, ":h")
-  vim.fn.mkdir(sessiondir, "p")
-  vim.cmd("mksession! " .. session_file_path)
 end
 
-local vim_enter_cb = function(data, config, session_file_path, ps)
+local vim_enter_cb = function(config, data, session_file_path)
   local file_path_rel = vim.fn.fnamemodify(data.file, ":~:.:p")
   if data.file and vim.tbl_contains(config.deny_on_path, file_path_rel) then
     return
   end
 
-  local dir = vim.fn.getcwd()
+  local session_file = Utils.join_paths(session_file_path, config.session_file_name)
 
-  for _, root in ipairs(config.project_dir_matchers) do
-    if vim.fn.isdirectory(dir .. ps .. root) == 1 then
-      save_session = true
-      break
-    end
-  end
+  if vim.fn.filereadable(session_file) == 1 then
+    -- Check if the session file is not empty
+    local session_file_size = vim.fn.getfsize(session_file)
+    if session_file_size > 0 then
+      -- Try to source the session file safely
+      local ok, err = pcall(function()
+        vim.cmd("silent! source " .. session_file)
+      end)
+      if not ok then
+        vim.notify("Failed to restore session: " .. err, vim.log.levels.WARN)
+      end
 
-  if save_session then
-    if vim.fn.filereadable(session_file_path) == 1 then
-      -- Check if the session file is not empty
-      local session_file_size = vim.fn.getfsize(session_file_path)
-      if session_file_size > 0 then
-        -- Try to source the session file safely
-        local ok, err = pcall(function()
-          vim.cmd("silent! source " .. session_file_path)
-        end)
-        if not ok then
-          vim.notify("Failed to restore session: " .. err, vim.log.levels.WARN)
-        end
-
-        if data.file then
-          vim.cmd("e " .. data.file)
-        end
+      if data.file then
+        vim.cmd("e " .. data.file)
       end
     end
   end
 end
 
 M.setup = function(config)
-  local ps = package.config:sub(1, 1)
   local augroup = vim.api.nvim_create_augroup("KikaoSession", { clear = true })
-  local session_file_path = config.session_file_path
-  if session_file_path == nil then
-    session_file_path = vim.fn.getcwd() .. ps .. ".editor" .. ps .. "neovim-session.vim"
+  local session_file_path
+  local project_dir
+  if config.session_file_path == nil then
+    local session_file_path_info = Utils.get_session_save_path_info(config.project_dir_matchers)
+    if session_file_path_info == nil then
+      return
+    end
+    project_dir = session_file_path_info.project_root
+    session_file_path = session_file_path_info.session_file_path
   else
-    session_file_path = session_file_path:gsub("{{PROJECT_DIR}}", vim.fn.getcwd())
+    session_file_path = config.session_file_path:gsub("{{PROJECT_DIR}}", vim.fn.getcwd())
   end
 
   vim.api.nvim_create_autocmd("VimEnter", {
     callback = function(data)
       -- Call the session restoration function
       pcall(function()
-        vim_enter_cb(data or {}, config, session_file_path, ps)
+        vim_enter_cb(config, data or {}, session_file_path)
       end)
     end,
     group = augroup,
@@ -70,7 +69,7 @@ M.setup = function(config)
 
   vim.api.nvim_create_autocmd("VimLeave", {
     callback = function()
-      vim_leave_cb(session_file_path)
+      vim_leave_cb(config, session_file_path, project_dir)
     end,
     group = augroup,
   })
