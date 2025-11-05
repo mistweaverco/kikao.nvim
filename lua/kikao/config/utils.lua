@@ -68,6 +68,34 @@ M.write_project_metadata = function(project_root, metadata)
   filehandle:close()
 end
 
+---Write content to a file
+---@param file_path string full path to the file
+---@param content string content to write
+---@return boolean success
+M.write_file = function(file_path, content)
+  local filehandle = io.open(file_path, "w")
+  if not filehandle then
+    return false
+  end
+  filehandle:write(content)
+  filehandle:close()
+  return true
+end
+
+---Append content to a file
+---@param file_path string full path to the file
+---@param content string content to append
+---@return boolean success
+M.append_contents_to_file = function(file_path, content)
+  local filehandle = io.open(file_path, "a")
+  if not filehandle then
+    return false
+  end
+  filehandle:write(content)
+  filehandle:close()
+  return true
+end
+
 M.get_nearest_vcs_root = function()
   return M.find_first_in_parent_dirs({ ".git", ".hg", ".jj" }, "directory")
 end

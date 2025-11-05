@@ -1,8 +1,21 @@
 local Utils = require("kikao.config.utils")
 local M = {}
 
+local remove_buffers_on_deny_path = function(config)
+  for _, pattern in ipairs(config.deny_on_path) do
+    local buf_ids = vim.fn.getbufinfo({ buflisted = 1 })
+    for _, buf in ipairs(buf_ids) do
+      local buf_name = vim.fn.fnamemodify(buf.name, ":~:.:p")
+      if buf_name == pattern then
+        vim.cmd("bdelete! " .. buf.bufnr)
+      end
+    end
+  end
+end
+
 local vim_leave_cb = function(config, session_file_path, project_dir)
   local session_file = Utils.join_paths(session_file_path, config.session_file_name)
+  remove_buffers_on_deny_path(config)
   vim.cmd("mksession! " .. session_file)
   -- INFO:
   -- Could be empty if session_file_path is managed by user
@@ -15,11 +28,6 @@ local vim_leave_cb = function(config, session_file_path, project_dir)
 end
 
 local vim_enter_cb = function(config, data, session_file_path)
-  local file_path_rel = vim.fn.fnamemodify(data.file, ":~:.:p")
-  if data.file and vim.tbl_contains(config.deny_on_path, file_path_rel) then
-    return
-  end
-
   local session_file = Utils.join_paths(session_file_path, config.session_file_name)
 
   if vim.fn.filereadable(session_file) == 1 then
