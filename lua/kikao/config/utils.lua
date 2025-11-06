@@ -12,11 +12,37 @@ end
 --- @usage local cache_dir = utils.get_cache_dir()
 M.get_cache_dir = function(path)
   local cache = vim.fn.stdpath("cache")
+  if cache == "" then
+    return nil
+  end
+  local cache_dir = M.join_paths(cache, "kikao.nvim")
   if path then
     local hash = vim.fn.sha256(path)
-    return M.join_paths(cache, "kikao.nvim", hash)
+    cache_dir = M.join_paths(cache, "kikao.nvim", hash)
   end
-  return M.join_paths(cache, "kikao.nvim")
+  if not M.file_exists(cache_dir) then
+    if vim.fn.mkdir(cache_dir, "p") == 0 then
+      return nil
+    end
+  end
+  return cache_dir
+end
+
+---Get project root directory
+---@param markers table|nil optional list of project dir markers
+---@return string|nil project root directory if found, else nil
+---@usage local root_dir = utils.get_root_dir({'.git', 'package.json'})
+M.get_root_dir = function(markers)
+  if markers == nil then
+    return M.get_nearest_vcs_root()
+  else
+    local finder = M.find_first_in_parent_dirs(markers, "directory")
+    if finder == nil then
+      return nil
+    end
+    -- get parent directory of finder
+    return vim.fs.dirname(finder)
+  end
 end
 
 -- find nearest file in parent directories, starting from the current buffer file path
@@ -44,28 +70,42 @@ M.get_current_buffer_dir = function()
 end
 
 M.file_exists = function(path)
-  return vim.loop.fs_stat(path) ~= nil
+  return vim.fn.filereadable(path) == 1
+end
+
+M.get_file_contents = function(file_path)
+  local filehandle = io.open(file_path, "r")
+  if not filehandle then
+    return nil
+  end
+  local content = filehandle:read("*a")
+  filehandle:close()
+  return content
+end
+
+M.get_json_file_contents = function(file_path)
+  local content = M.get_file_contents(file_path)
+  if not content then
+    return nil
+  end
+  content = content == "" and "{}" or content
+  return vim.json.decode(content)
 end
 
 M.write_project_metadata = function(project_root, metadata)
   local metadata_file_path = M.join_paths(M.get_cache_dir(project_root), "metadata.json")
   local new_metadata
-  local filehandle = io.open(metadata_file_path, "r+")
+
   if M.file_exists(metadata_file_path) then
-    if not filehandle then
+    local old_metadata = M.get_json_file_contents(metadata_file_path)
+    if not old_metadata then
       return
     end
-    local content = filehandle:read("*a")
-    local old_metadata = vim.fn.json_decode(content) or {}
-    new_metadata = vim.tbl_extend("force", old_metadata, metadata)
+    new_metadata = vim.tbl_deep_extend("force", old_metadata, metadata)
   else
     new_metadata = metadata
   end
-  if not filehandle then
-    return
-  end
-  filehandle:write(vim.fn.json_encode(new_metadata))
-  filehandle:close()
+  M.write_file(metadata_file_path, vim.json.encode(new_metadata))
 end
 
 ---Write content to a file
@@ -97,7 +137,12 @@ M.append_contents_to_file = function(file_path, content)
 end
 
 M.get_nearest_vcs_root = function()
-  return M.find_first_in_parent_dirs({ ".git", ".hg", ".jj" }, "directory")
+  local vcs_dir = M.find_first_in_parent_dirs({ ".git", ".hg", ".jj" }, "directory")
+  if vcs_dir == nil then
+    return nil
+  end
+  -- get parent directory of vcs_dir
+  return vim.fs.dirname(vcs_dir)
 end
 
 ---@class SessionSavePathInfo
@@ -108,12 +153,7 @@ end
 ---@param markers table|nil optional list of project dir markers
 ---@return SessionSavePathInfo|nil
 M.get_session_save_path_info = function(markers)
-  local root_dir
-  if markers ~= nil then
-    root_dir = M.find_first_in_parent_dirs(markers, "directory")
-  else
-    root_dir = M.get_nearest_vcs_root()
-  end
+  local root_dir = M.get_root_dir(markers)
   if root_dir == nil then
     return nil
   end
@@ -121,7 +161,6 @@ M.get_session_save_path_info = function(markers)
   if session_dir == nil then
     return nil
   end
-  vim.fn.mkdir(session_dir, "p")
   local session_file_path = session_dir
   return {
     session_file_path = session_file_path,
