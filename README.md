@@ -91,3 +91,11 @@ Additionally, kikao saves metadata about the session in a separate file called
 
 This metadata includes:
 - The project root path as (`project_dir`)
+
+## API
+
+- `require("kikao").clear()` - Clears the current project's session file.
+  Also closes all buffers.
+- `require("kikao").clear_all()` - Clears all session files.
+  Also closes all buffers.
+- `require("kikao").version()` - Returns the version info.

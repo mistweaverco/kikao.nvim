@@ -7,7 +7,7 @@ local remove_buffers_on_deny_path = function(config)
     for _, buf in ipairs(buf_ids) do
       local buf_name = vim.fn.fnamemodify(buf.name, ":~:.:p")
       if buf_name == pattern then
-        vim.cmd("bdelete! " .. buf.bufnr)
+        vim.api.nvim_buf_delete(buf.bufnr, { force = true })
       end
     end
   end
@@ -16,7 +16,14 @@ end
 local vim_leave_cb = function(config, session_file_path, project_dir)
   local session_file = Utils.join_paths(session_file_path, config.session_file_name)
   remove_buffers_on_deny_path(config)
-  vim.cmd("mksession! " .. session_file)
+  if Utils.is_empty_or_start_buffer() then
+    if vim.fn.filereadable(session_file) == 1 then
+      vim.fn.delete(session_file)
+    end
+  else
+    vim.cmd("mksession! " .. session_file)
+  end
+
   -- INFO:
   -- Could be empty if session_file_path is managed by user
   if project_dir then
@@ -50,7 +57,7 @@ local vim_enter_cb = function(config, data, session_file_path)
 end
 
 M.setup = function(config)
-  local augroup = vim.api.nvim_create_augroup("KikaoSession", { clear = true })
+  local augroup = vim.api.nvim_create_augroup("com.mistweaverco.apps.neovim.kikao", { clear = true })
   local session_file_path
   local project_dir
   if config.session_file_path == nil then

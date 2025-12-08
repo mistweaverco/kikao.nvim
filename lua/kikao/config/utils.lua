@@ -108,6 +108,23 @@ M.write_project_metadata = function(project_root, metadata)
   M.write_file(metadata_file_path, vim.json.encode(new_metadata))
 end
 
+---Check if current buffers are empty,
+---not counting unlisted buffers,
+---or only the start buffer is open
+---@return boolean
+M.is_empty_or_start_buffer = function()
+  local buf_info = vim.fn.getbufinfo({ buflisted = 1 })
+  if #buf_info == 0 then
+    return true
+  elseif #buf_info == 1 then
+    local buf = buf_info[1]
+    if vim.fn.getbufline(buf.bufnr, 1)[1] == "" then
+      return true
+    end
+  end
+  return false
+end
+
 ---Write content to a file
 ---@param file_path string full path to the file
 ---@param content string content to write
