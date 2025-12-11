@@ -6,7 +6,7 @@ local remove_buffers_on_deny_path = function(config)
     local buf_ids = vim.fn.getbufinfo({ buflisted = 1 })
     for _, buf in ipairs(buf_ids) do
       local buf_name = vim.fn.fnamemodify(buf.name, ":~:.:p")
-      if buf_name == pattern then
+      if buf_name:match(pattern) then
         vim.api.nvim_buf_delete(buf.bufnr, { force = true })
       end
     end
