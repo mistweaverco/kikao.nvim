@@ -92,6 +92,10 @@ M.get_json_file_contents = function(file_path)
   return vim.json.decode(content)
 end
 
+---Write project metadata to cache
+---@param project_root string project root directory
+---@param metadata table metadata to write
+---@return boolean success
 M.write_project_metadata = function(project_root, metadata)
   local metadata_file_path = M.join_paths(M.get_cache_dir(project_root), "metadata.json")
   local new_metadata
@@ -99,13 +103,46 @@ M.write_project_metadata = function(project_root, metadata)
   if M.file_exists(metadata_file_path) then
     local old_metadata = M.get_json_file_contents(metadata_file_path)
     if not old_metadata then
-      return
+      return false
     end
     new_metadata = vim.tbl_deep_extend("force", old_metadata, metadata)
   else
     new_metadata = metadata
   end
-  M.write_file(metadata_file_path, vim.json.encode(new_metadata))
+  return M.write_file(metadata_file_path, vim.json.encode(new_metadata))
+end
+
+---Get project metadata from cache
+---@param project_root string project root directory
+---@return table|nil metadata if exists, else nil
+M.get_project_metadata = function(project_root)
+  local metadata_file_path = M.join_paths(M.get_cache_dir(project_root), "metadata.json")
+  if not M.file_exists(metadata_file_path) then
+    return nil
+  end
+  return M.get_json_file_contents(metadata_file_path)
+end
+
+---Given a table and a dot notation key, returns the part of the table
+---@param tbl table the table to access
+---@param key string dot notation key
+---@return table|nil the value at the dot notation key, or nil if not found
+M.resolve_dot_notation_for_table = function(tbl, key)
+  local parts = {}
+  for part in string.gmatch(key, "[^%.]+") do
+    table.insert(parts, part)
+  end
+  local current = tbl
+  for _, part in ipairs(parts) do
+    if type(current) ~= "table" then
+      return nil
+    end
+    current = current[part]
+    if current == nil then
+      return nil
+    end
+  end
+  return current
 end
 
 ---Check if current buffers are empty,
