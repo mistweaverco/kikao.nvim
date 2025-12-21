@@ -73,7 +73,7 @@ Via [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 How does it work?
 
-- When you open neovim, kikao will for an existing session file for the project.
+- When you open neovim, kikao will look for an existing session file for the project.
 - If there is a session file, it'll be loaded.
 - When you close neovim, kikao will save the session file in the project root.
 
@@ -91,6 +91,12 @@ Additionally, kikao saves metadata about the session in a separate file called
 
 This metadata includes:
 - The project root path as (`project_dir`)
+
+But it can also include many more sets of data from other plugins.
+
+See [here](https://github.com/mistweaverco/bafa.nvim/blob/e051e06dc250baf703c2a9d5327a9e8ace0c9f7f/lua/bafa/utils/state.lua#L300) for an example how other plugins persist data via Kikao.
+
+Reading from persisted data via the Kikao API is [also pretty easy](https://github.com/mistweaverco/bafa.nvim/blob/e051e06dc250baf703c2a9d5327a9e8ace0c9f7f/lua/bafa/utils/state.lua#L313).
 
 ## API
 
