@@ -5,7 +5,7 @@
 # Kikao.nvim
 
 [![Made with love][badge-made-with-love]][contributors]
-[[![Made with love][badge-latest-release]][latest-release]][latest-release]
+[![Latest release][badge-latest-release]][latest-release]
 
 [What](#what) •
 [Requirements](#requirements) •
