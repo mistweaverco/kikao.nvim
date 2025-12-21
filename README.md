@@ -86,7 +86,7 @@ vim.pack.add({
   src = 'https://github.com/mistweaverco/kikao.nvim.git',
   version = 'v3.3.1',
 })
-require('snap').setup({})
+require('kikao').setup({})
 ```
 
 > [!IMPORTANT]
