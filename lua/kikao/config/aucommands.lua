@@ -57,6 +57,11 @@ local vim_enter_cb = function(config, data, session_file_path)
 end
 
 M.setup = function(config)
+  -- Prevent sourcing at all when run via git mergetool
+  if Utils.is_git_mergetool() then
+    return
+  end
+
   local augroup = vim.api.nvim_create_augroup("com.mistweaverco.apps.neovim.kikao", { clear = true })
   local session_file_path
   local project_dir
@@ -73,6 +78,10 @@ M.setup = function(config)
 
   vim.api.nvim_create_autocmd("VimEnter", {
     callback = function(data)
+      -- Disable on diff conflicts.nvim buffers
+      if Utils.is_diffconflicts_buffer() then
+        return
+      end
       -- Call the session restoration function
       pcall(function()
         vim_enter_cb(config, data or {}, session_file_path)
@@ -84,6 +93,18 @@ M.setup = function(config)
 
   vim.api.nvim_create_autocmd("VimLeave", {
     callback = function()
+      -- Disable on diff conflicts.nvim buffers
+      -- Check all buffers to see if any are diffconflicts buffers
+      local has_diffconflicts = false
+      for _, buf in ipairs(vim.fn.getbufinfo({ buflisted = 1 })) do
+        if Utils.is_diffconflicts_buffer(buf.bufnr) then
+          has_diffconflicts = true
+          break
+        end
+      end
+      if has_diffconflicts then
+        return
+      end
       vim_leave_cb(config, session_file_path, project_dir)
     end,
     group = augroup,

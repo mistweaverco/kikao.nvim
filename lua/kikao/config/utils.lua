@@ -199,6 +199,33 @@ M.get_nearest_vcs_root = function()
   return vim.fs.dirname(vcs_dir)
 end
 
+---Check if running via git mergetool
+---@return boolean
+M.is_git_mergetool = function()
+  -- Check environment variables set by git mergetool
+  -- GIT_MERGETOOL is set by git when running mergetool
+  if vim.env.GIT_MERGETOOL or vim.env.GIT_MERGE_TOOL then
+    return true
+  end
+  return false
+end
+
+---Check if current buffer is a diffconflicts.nvim buffer
+---@param bufnr number|nil optional buffer number, defaults to current buffer
+---@return boolean
+M.is_diffconflicts_buffer = function(bufnr)
+  bufnr = bufnr or 0
+  local buf_name = vim.api.nvim_buf_get_name(bufnr)
+  if buf_name == "" then
+    return false
+  end
+  -- diffconflicts.nvim creates buffers with .LOCAL., .BASE., or .REMOTE. in the name
+  if buf_name:match("%.LOCAL%.") or buf_name:match("%.BASE%.") or buf_name:match("%.REMOTE%.") then
+    return true
+  end
+  return false
+end
+
 ---@class SessionSavePathInfo
 ---@field session_file_path string full path to session file
 ---@field project_root string project root directory
