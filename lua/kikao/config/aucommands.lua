@@ -41,12 +41,19 @@ local vim_enter_cb = function(config, data, session_file_path)
     -- Check if the session file is not empty
     local session_file_size = vim.fn.getfsize(session_file)
     if session_file_size > 0 then
+      -- Store the current working directory before sourcing the session
+      -- Session files can change the cwd, so we need to restore it afterward
+      local original_cwd = vim.fn.getcwd()
+
       -- Try to source the session file safely
       local ok, err = pcall(function()
         vim.cmd("silent! source " .. session_file)
       end)
       if not ok then
         vim.notify("Failed to restore session: " .. err, vim.log.levels.WARN)
+      else
+        -- Restore the original working directory after sourcing the session
+        vim.cmd("cd " .. vim.fn.fnameescape(original_cwd))
       end
 
       if data.file then
