@@ -52,7 +52,7 @@ See: [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
 {
   'mistweaverco/kikao.nvim',
-  version = 'v3.3.0',
+  version = 'v3.3.1',
   opts = {}
 },
 ```
@@ -68,7 +68,7 @@ See: [packer.nvim](https://github.com/wbthomason/packer.nvim)
 ```lua
 use {
   'mistweaverco/kikao.nvim',
-  tag = 'v3.3.0',
+  tag = 'v3.3.1',
   config = function()
     require('snap').setup({})
   end
@@ -84,7 +84,7 @@ use {
 ```lua
 vim.pack.add({
   src = 'https://github.com/mistweaverco/kikao.nvim.git',
-  version = 'v3.3.0',
+  version = 'v3.3.1',
 })
 require('snap').setup({})
 ```
@@ -114,6 +114,7 @@ return {
     -- checkign via str:match on bufname
     deny_on_path = {
         ".git/COMMIT_EDITMSG",
+        ".git/git-rebase-todo",
     }
 }
 ```
