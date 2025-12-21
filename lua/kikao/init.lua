@@ -1,6 +1,6 @@
+local Api = require("kikao.api")
 local Globals = require("kikao.globals")
 local Logger = require("kikao.logger")
-local Api = require("kikao.api")
 local M = {}
 
 ---Sets up Kikao with the provided configuration.
