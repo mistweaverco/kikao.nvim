@@ -18,7 +18,7 @@
 
 A minimal session management plugin for your favorite editor.
 
-Kikao is swahili for "session."
+Kikao is [swahili] for "session."
 
 </div>
 
@@ -159,7 +159,8 @@ How does it work?
 
 ### Session file location
 
-Sessions are stored in a directory structure based on the SHA256 hash of the
+Sessions are stored in a
+directory structure based on the SHA256 hash of the
 project root path.
 
 For example:
@@ -208,6 +209,7 @@ the exposed `kikao.api.get_value` function is
 [badge-made-with-love]: assets/badge-made-with-love.svg
 [contributors]: https://github.com/mistweaverco/kikao.nvim/graphs/contributors
 [logo]: assets/logo.svg
+[swahili]: https://en.wikipedia.org/wiki/Swahili_language
 [badge-latest-release]: https://img.shields.io/github/v/release/mistweaverco/kikao.nvim?style=for-the-badge
 [latest-release]: https://github.com/mistweaverco/kikao.nvim/releases/latest
 [api-other-plugins-set]: https://github.com/mistweaverco/bafa.nvim/blob/e051e06dc250baf703c2a9d5327a9e8ace0c9f7f/lua/bafa/utils/state.lua#L300
