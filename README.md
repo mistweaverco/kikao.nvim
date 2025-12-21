@@ -70,7 +70,7 @@ use {
   'mistweaverco/kikao.nvim',
   tag = 'v3.3.1',
   config = function()
-    require('snap').setup({})
+    require('kikao').setup({})
   end
 })
 ```
