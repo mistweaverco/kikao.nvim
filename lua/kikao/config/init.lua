@@ -27,7 +27,7 @@ M.defaults = {
   session_file_name = "session.vim",
   deny_on_path = {
     ".git/COMMIT_EDITMSG",
-    ".git/git-rebase-todo",
+    ".git/rebase-merge/git-rebase-todo",
     "NeovimTree_",
     "fugitive://",
     "git://",

@@ -115,7 +115,7 @@ return {
   -- checkign via str:match on bufname
   deny_on_path = {
     ".git/COMMIT_EDITMSG",
-    ".git/git-rebase-todo",
+    ".git/rebase-merge/git-rebase-todo",
     "NeovimTree_",
     "fugitive://",
     "git://",
