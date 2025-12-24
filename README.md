@@ -1,6 +1,6 @@
 <div align="center">
 
-![Kikao Logo](logo.svg)
+![Kikao Logo][logo]
 
 # Kikao.nvim
 
