@@ -1,11 +1,23 @@
+---@class KikaoAPI
+---@field setup fun(config: KikaoUserConfig): nil
+---@field clear fun(): nil
+---@field clear_all fun(): nil
+---@field get_value fun(opts: KikaoAPIGetValueOpts): any|nil
+---@field set_value fun(opts: KikaoAPISetValueOpts): boolean
+
 local M = {}
+
+---@class KikaoUserConfig
 local Config = require("kikao.config")
 
+---Setup Kikao with user configuration
+---@param config KikaoUserConfig
 M.setup = function(config)
   Config.setup(config)
 end
 
 ---Clears cached data for the current project and closes all Kikao buffers.
+---@return nil
 M.clear = function()
   local utils = require("kikao.config.utils")
   local project_root = utils.get_root_dir(Config.options.project_dir_matchers)
@@ -19,6 +31,7 @@ M.clear = function()
 end
 
 ---Clears all cached data and closes all Kikao buffers.
+---@return nil
 M.clear_all = function()
   local utils = require("kikao.config.utils")
   local all_cache_dir = utils.get_cache_dir()
@@ -65,4 +78,5 @@ M.set_value = function(opts)
   return utils.write_project_metadata(project_root, { [opts.key] = opts.value })
 end
 
+---@return KikaoAPI
 return M

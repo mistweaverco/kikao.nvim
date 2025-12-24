@@ -52,7 +52,7 @@ See: [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
 {
   'mistweaverco/kikao.nvim',
-  version = 'v3.3.1',
+  version = 'v3.3.2',
   opts = {}
 },
 ```
@@ -68,7 +68,7 @@ See: [packer.nvim](https://github.com/wbthomason/packer.nvim)
 ```lua
 use {
   'mistweaverco/kikao.nvim',
-  tag = 'v3.3.1',
+  tag = 'v3.3.2',
   config = function()
     require('kikao').setup({})
   end
@@ -84,7 +84,7 @@ use {
 ```lua
 vim.pack.add({
   src = 'https://github.com/mistweaverco/kikao.nvim.git',
-  version = 'v3.3.1',
+  version = 'v3.3.2',
 })
 require('kikao').setup({})
 ```
@@ -96,26 +96,36 @@ require('kikao').setup({})
 ## Configuration options
 
 ```lua
+---@type KikaoDefaultConfig
 return {
-    -- Checks for the existence of the project root by checking for these directories
-    -- If none are found, the session won't be loaded or saved
-    project_dir_matchers = { ".git", ".svn", ".jj", ".hg" },
-    -- The path to the session file
-    -- If not provided, the session file will be stored in:
-    -- ~/.cache/nvim/kikao.nvim/{{SHA256_PROJECT_DIR}}/session.vim
-    --
-    -- If you want to store the session file in the project root,
-    -- you can set this to "{{PROJECT_DIR}}/.session.vim"
-    session_file_path = nil,
-    -- The name of the session file
-    session_file_name = "session.vim",
-    -- Don't start or restore a session if the file is in the deny_on_path list
-    -- and you opened that file directly
-    -- checkign via str:match on bufname
-    deny_on_path = {
-        ".git/COMMIT_EDITMSG",
-        ".git/git-rebase-todo",
-    }
+  -- Checks for the existence of the project root by checking for these directories
+  -- If none are found, the session won't be loaded or saved
+  project_dir_matchers = { ".git", ".svn", ".jj", ".hg" },
+  -- The path to the session file
+  -- If not provided, the session file will be stored in:
+  -- ~/.cache/nvim/kikao.nvim/{{SHA256_PROJECT_DIR}}/session.vim
+  --
+  -- If you want to store the session file in the project root,
+  -- you can set this to "{{PROJECT_DIR}}/.session.vim"
+  session_file_path = nil,
+  -- The name of the session file
+  session_file_name = "session.vim",
+  -- Don't start or restore a session if the file is in the deny_on_path list
+  -- and you opened that file directly
+  -- checkign via str:match on bufname
+  deny_on_path = {
+    ".git/COMMIT_EDITMSG",
+    ".git/git-rebase-todo",
+    "NeovimTree_",
+    "fugitive://",
+    "git://",
+    "term://",
+    "toggleterm://",
+    "dap-repl://",
+    "dapui://",
+    "kulala://",
+    "NeogitStatus",
+  }
 }
 ```
 
