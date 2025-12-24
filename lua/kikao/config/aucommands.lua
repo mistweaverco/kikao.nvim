@@ -3,10 +3,11 @@ local M = {}
 
 local remove_buffers_on_deny_path = function(config)
   for _, pattern in ipairs(config.deny_on_path) do
-    local buf_ids = vim.fn.getbufinfo({ buflisted = 1 })
+    local buf_ids = vim.fn.getbufinfo()
     for _, buf in ipairs(buf_ids) do
       local buf_name = vim.fn.fnamemodify(buf.name, ":~:.:p")
-      if buf_name:match(pattern) then
+      --- Remove buffer if it matches the deny pattern or is unlisted
+      if buf_name:match(pattern) or buf.listed == 0 then
         vim.api.nvim_buf_delete(buf.bufnr, { force = true })
       end
     end
