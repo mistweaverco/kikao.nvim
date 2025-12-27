@@ -5,6 +5,9 @@
 # Kikao.nvim
 
 [![Made with love][badge-made-with-love]][contributors]
+[![Development status][badge-development-status]][development-status]
+[![Our manifesto][badge-our-manifesto]][our-manifesto]
+![Made with lua][badge-made-with-lua]
 [![Latest release][badge-latest-release]][latest-release]
 
 [What](#what) •
@@ -216,11 +219,15 @@ the exposed `kikao.api.get_value` function is
 
 
 
+[badge-made-with-lua]: assets/badge-made-with-lua.svg
+[badge-development-status]: assets/badge-development-status.svg
+[badge-our-manifesto]: assets/badge-our-manifesto.svg
 [badge-made-with-love]: assets/badge-made-with-love.svg
+[badge-latest-release]: https://img.shields.io/github/v/release/mistweaverco/kikao.nvim?style=for-the-badge
+[our-manifesto]: https://mistweaverco.com/manifesto
+[development-status]: https://github.com/orgs/mistweaverco/projects/5/views/1?filterQuery=repo%3Amistweaverco%2Fsnap.nvim
 [contributors]: https://github.com/mistweaverco/kikao.nvim/graphs/contributors
 [logo]: assets/logo.svg
 [swahili]: https://en.wikipedia.org/wiki/Swahili_language
-[badge-latest-release]: https://img.shields.io/github/v/release/mistweaverco/kikao.nvim?style=for-the-badge
 [latest-release]: https://github.com/mistweaverco/kikao.nvim/releases/latest
 [api-other-plugins-set]: https://github.com/mistweaverco/bafa.nvim/blob/e051e06dc250baf703c2a9d5327a9e8ace0c9f7f/lua/bafa/utils/state.lua#L300
-[api-other-plugins-get]: https://github.com/mistweaverco/bafa.nvim/blob/e051e06dc250baf703c2a9d5327a9e8ace0c9f7f/lua/bafa/utils/state.lua#L313
