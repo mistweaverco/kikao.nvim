@@ -18,7 +18,13 @@ M.clear = function()
   local utils = require("kikao.config.utils")
   local project_root = utils.get_root_dir(user_config.project_dir_matchers)
   local project_cache_dir = utils.get_cache_dir(project_root)
-  if project_cache_dir and utils.file_exists(project_cache_dir) then vim.fn.delete(project_cache_dir, "rf") end
+  local confirm =
+    vim.fn.input("Are you sure you want to clear project specific Kikao cache in " .. project_cache_dir .. " ? (y/N): ")
+  if confirm:lower() ~= "y" then
+    print("Aborted clearing project specifiv Kikao cache.")
+    return
+  end
+  if project_cache_dir and utils.dir_exists(project_cache_dir) then vim.fn.delete(project_cache_dir, "rf") end
   for _, buf in pairs(vim.fn.getbufinfo()) do
     vim.api.nvim_buf_delete(buf.bufnr, { force = true })
   end
@@ -29,7 +35,12 @@ end
 M.clear_all = function()
   local utils = require("kikao.config.utils")
   local all_cache_dir = utils.get_cache_dir()
-  if all_cache_dir and utils.file_exists(all_cache_dir) then vim.fn.delete(all_cache_dir, "rf") end
+  local confirm = vim.fn.input("Are you sure you want to clear all Kikao caches in " .. all_cache_dir .. " ? (y/N): ")
+  if confirm:lower() ~= "y" then
+    print("Aborted clearing all Kikao caches.")
+    return
+  end
+  if all_cache_dir and utils.dir_exists(all_cache_dir) then vim.fn.delete(all_cache_dir, "rf") end
   for _, buf in pairs(vim.fn.getbufinfo()) do
     vim.api.nvim_buf_delete(buf.bufnr, { force = true })
   end

@@ -55,7 +55,7 @@ See: [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
 {
   'mistweaverco/kikao.nvim',
-  version = 'v3.3.3',
+  version = 'v3.3.4',
   opts = {}
 },
 ```
@@ -71,7 +71,7 @@ See: [packer.nvim](https://github.com/wbthomason/packer.nvim)
 ```lua
 use {
   'mistweaverco/kikao.nvim',
-  tag = 'v3.3.3',
+  tag = 'v3.3.4',
   config = function()
     require('kikao').setup({})
   end
@@ -87,7 +87,7 @@ use {
 ```lua
 vim.pack.add({
   src = 'https://github.com/mistweaverco/kikao.nvim.git',
-  version = 'v3.3.3',
+  version = 'v3.3.4',
 })
 require('kikao').setup({})
 ```

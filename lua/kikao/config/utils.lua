@@ -66,6 +66,7 @@ M.get_current_buffer_dir = function()
 end
 
 M.file_exists = function(path) return vim.fn.filereadable(path) == 1 end
+M.dir_exists = function(path) return vim.fn.isdirectory(path) == 1 end
 
 M.get_file_contents = function(file_path)
   local filehandle = io.open(file_path, "r")
