@@ -7,7 +7,6 @@
 
 local M = {}
 
----@class KikaoUserConfig
 local Config = require("kikao.config")
 
 ---Setup Kikao with user configuration
