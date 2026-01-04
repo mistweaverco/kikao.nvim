@@ -225,7 +225,7 @@ the exposed `kikao.api.get_value` function is
 [badge-made-with-love]: assets/badge-made-with-love.svg
 [badge-latest-release]: https://img.shields.io/github/v/release/mistweaverco/kikao.nvim?style=for-the-badge
 [our-manifesto]: https://mistweaverco.com/manifesto
-[development-status]: https://github.com/orgs/mistweaverco/projects/5/views/1?filterQuery=repo%3Amistweaverco%2Fsnap.nvim
+[development-status]: https://mistweaverco.com/roadmap?filter=kikao.nvim
 [contributors]: https://github.com/mistweaverco/kikao.nvim/graphs/contributors
 [logo]: assets/logo.svg
 [swahili]: https://en.wikipedia.org/wiki/Swahili_language
