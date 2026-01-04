@@ -54,9 +54,7 @@ end
 
 ---Set Kikao configuration at runtime
 ---@param config KikaoUserConfig
-M.set = function(config)
-  M.options = vim.tbl_deep_extend("force", M.options, config)
-end
+M.set = function(config) M.options = vim.tbl_deep_extend("force", M.options, config) end
 
 ---Get current Kikao configuration
 ---@return KikaoActiveConfig

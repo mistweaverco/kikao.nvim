@@ -5,8 +5,6 @@ local info = health.info
 
 local M = {}
 
-M.check = function()
-  info("{kikao.nvim} version " .. Globals.VERSION)
-end
+M.check = function() info("{kikao.nvim} version " .. Globals.VERSION) end
 
 return M
