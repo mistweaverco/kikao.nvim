@@ -1,5 +1,5 @@
 local M = {}
-local IS_WINDOWS = vim.loop.os_uname().version:match("Windows")
+local IS_WINDOWS = vim.uv.os_uname().version:match("Windows")
 
 M.join_paths = function(...)
   local paths = { ... }
@@ -12,18 +12,14 @@ end
 --- @usage local cache_dir = utils.get_cache_dir()
 M.get_cache_dir = function(path)
   local cache = vim.fn.stdpath("cache")
-  if cache == "" then
-    return nil
-  end
+  if cache == "" then return nil end
   local cache_dir = M.join_paths(cache, "kikao.nvim")
   if path then
     local hash = vim.fn.sha256(path)
     cache_dir = M.join_paths(cache, "kikao.nvim", hash)
   end
   if not M.file_exists(cache_dir) then
-    if vim.fn.mkdir(cache_dir, "p") == 0 then
-      return nil
-    end
+    if vim.fn.mkdir(cache_dir, "p") == 0 then return nil end
   end
   return cache_dir
 end
@@ -37,11 +33,11 @@ M.get_root_dir = function(markers)
     return M.get_nearest_vcs_root()
   else
     local finder = M.find_first_in_parent_dirs(markers, "directory")
-    if finder == nil then
-      return nil
-    end
+    if finder == nil then return nil end
     -- get parent directory of finder
-    return vim.fs.dirname(finder)
+    local dir = vim.fs.dirname(finder)
+    -- return absolute path
+    return vim.fn.fnamemodify(dir, ":p")
   end
 end
 
@@ -63,21 +59,17 @@ end
 M.get_current_buffer_dir = function()
   local buf_path = vim.api.nvim_buf_get_name(0)
   if buf_path == "" then
-    return vim.loop.cwd()
+    return vim.uv.cwd()
   else
     return vim.fs.dirname(buf_path)
   end
 end
 
-M.file_exists = function(path)
-  return vim.fn.filereadable(path) == 1
-end
+M.file_exists = function(path) return vim.fn.filereadable(path) == 1 end
 
 M.get_file_contents = function(file_path)
   local filehandle = io.open(file_path, "r")
-  if not filehandle then
-    return nil
-  end
+  if not filehandle then return nil end
   local content = filehandle:read("*a")
   filehandle:close()
   return content
@@ -85,9 +77,7 @@ end
 
 M.get_json_file_contents = function(file_path)
   local content = M.get_file_contents(file_path)
-  if not content then
-    return nil
-  end
+  if not content then return nil end
   content = content == "" and "{}" or content
   return vim.json.decode(content)
 end
@@ -102,9 +92,7 @@ M.write_project_metadata = function(project_root, metadata)
 
   if M.file_exists(metadata_file_path) then
     local old_metadata = M.get_json_file_contents(metadata_file_path)
-    if not old_metadata then
-      return false
-    end
+    if not old_metadata then return false end
     new_metadata = vim.tbl_deep_extend("force", old_metadata, metadata)
   else
     new_metadata = metadata
@@ -117,9 +105,7 @@ end
 ---@return table|nil metadata if exists, else nil
 M.get_project_metadata = function(project_root)
   local metadata_file_path = M.join_paths(M.get_cache_dir(project_root), "metadata.json")
-  if not M.file_exists(metadata_file_path) then
-    return nil
-  end
+  if not M.file_exists(metadata_file_path) then return nil end
   return M.get_json_file_contents(metadata_file_path)
 end
 
@@ -134,13 +120,9 @@ M.resolve_dot_notation_for_table = function(tbl, key)
   end
   local current = tbl
   for _, part in ipairs(parts) do
-    if type(current) ~= "table" then
-      return nil
-    end
+    if type(current) ~= "table" then return nil end
     current = current[part]
-    if current == nil then
-      return nil
-    end
+    if current == nil then return nil end
   end
   return current
 end
@@ -155,9 +137,7 @@ M.is_empty_or_start_buffer = function()
     return true
   elseif #buf_info == 1 then
     local buf = buf_info[1]
-    if vim.fn.getbufline(buf.bufnr, 1)[1] == "" then
-      return true
-    end
+    if vim.fn.getbufline(buf.bufnr, 1)[1] == "" then return true end
   end
   return false
 end
@@ -168,9 +148,7 @@ end
 ---@return boolean success
 M.write_file = function(file_path, content)
   local filehandle = io.open(file_path, "w")
-  if not filehandle then
-    return false
-  end
+  if not filehandle then return false end
   filehandle:write(content)
   filehandle:close()
   return true
@@ -182,9 +160,7 @@ end
 ---@return boolean success
 M.append_contents_to_file = function(file_path, content)
   local filehandle = io.open(file_path, "a")
-  if not filehandle then
-    return false
-  end
+  if not filehandle then return false end
   filehandle:write(content)
   filehandle:close()
   return true
@@ -192,11 +168,11 @@ end
 
 M.get_nearest_vcs_root = function()
   local vcs_dir = M.find_first_in_parent_dirs({ ".git", ".hg", ".jj" }, "directory")
-  if vcs_dir == nil then
-    return nil
-  end
+  if vcs_dir == nil then return nil end
   -- get parent directory of vcs_dir
-  return vim.fs.dirname(vcs_dir)
+  local dir = vim.fs.dirname(vcs_dir)
+  -- return absolute path
+  return vim.fn.fnamemodify(dir, ":p")
 end
 
 ---Check if running via git mergetool
@@ -204,9 +180,7 @@ end
 M.is_git_mergetool = function()
   -- Check environment variables set by git mergetool
   -- GIT_MERGETOOL is set by git when running mergetool
-  if vim.env.GIT_MERGETOOL or vim.env.GIT_MERGE_TOOL then
-    return true
-  end
+  if vim.env.GIT_MERGETOOL or vim.env.GIT_MERGE_TOOL then return true end
   return false
 end
 
@@ -216,13 +190,9 @@ end
 M.is_diffconflicts_buffer = function(bufnr)
   bufnr = bufnr or 0
   local buf_name = vim.api.nvim_buf_get_name(bufnr)
-  if buf_name == "" then
-    return false
-  end
+  if buf_name == "" then return false end
   -- diffconflicts.nvim creates buffers with .LOCAL., .BASE., or .REMOTE. in the name
-  if buf_name:match("%.LOCAL%.") or buf_name:match("%.BASE%.") or buf_name:match("%.REMOTE%.") then
-    return true
-  end
+  if buf_name:match("%.LOCAL%.") or buf_name:match("%.BASE%.") or buf_name:match("%.REMOTE%.") then return true end
   return false
 end
 
@@ -235,13 +205,9 @@ end
 ---@return SessionSavePathInfo|nil
 M.get_session_save_path_info = function(markers)
   local root_dir = M.get_root_dir(markers)
-  if root_dir == nil then
-    return nil
-  end
+  if root_dir == nil then return nil end
   local session_dir = M.get_cache_dir(root_dir)
-  if session_dir == nil then
-    return nil
-  end
+  if session_dir == nil then return nil end
   local session_file_path = session_dir
   return {
     session_file_path = session_file_path,
