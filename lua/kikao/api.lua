@@ -7,19 +7,18 @@
 
 local M = {}
 
-local Config = require("kikao.config")
-
 ---Setup Kikao with user configuration
 ---@param config KikaoUserConfig
 M.setup = function(config)
-  Config.setup(config)
+  require("kikao.config").setup(config)
 end
 
 ---Clears cached data for the current project and closes all Kikao buffers.
 ---@return nil
 M.clear = function()
+  local user_config = require("kikao.config").get()
   local utils = require("kikao.config.utils")
-  local project_root = utils.get_root_dir(Config.options.project_dir_matchers)
+  local project_root = utils.get_root_dir(user_config.project_dir_matchers)
   local project_cache_dir = utils.get_cache_dir(project_root)
   if project_cache_dir and utils.file_exists(project_cache_dir) then
     vim.fn.delete(project_cache_dir, "rf")
@@ -49,8 +48,9 @@ end
 ---@param opts KikaoAPIGetValueOpts
 ---@return any|nil The value of the option, or nil if not found.
 M.get_value = function(opts)
+  local user_config = require("kikao.config").get()
   local utils = require("kikao.config.utils")
-  local project_root = utils.get_root_dir(Config.options.project_dir_matchers)
+  local project_root = utils.get_root_dir(user_config.project_dir_matchers)
   if not project_root then
     return nil
   end
@@ -69,8 +69,9 @@ end
 ---@param opts KikaoAPISetValueOpts
 ---@return boolean success
 M.set_value = function(opts)
+  local user_config = require("kikao.config").get()
   local utils = require("kikao.config.utils")
-  local project_root = utils.get_root_dir(Config.options.project_dir_matchers)
+  local project_root = utils.get_root_dir(user_config.project_dir_matchers)
   if not project_root then
     return false
   end
