@@ -33,9 +33,6 @@ M.defaults = {
     "git://",
     "term://",
     "toggleterm://",
-    "dap-repl://",
-    "dapui://",
-    "kulala://",
     "NeogitStatus",
   },
 }
