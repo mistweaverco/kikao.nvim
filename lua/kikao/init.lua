@@ -4,7 +4,10 @@ local Logger = require("kikao.logger")
 local M = {}
 
 ---Sets up Kikao with the provided configuration.
-M.setup = function(config) Api.setup(config) end
+M.setup = function(config)
+  if vim.env.DISABLE_KIKAO_NVIM then return end
+  Api.setup(config)
+end
 
 ---Clears cached data for the current project and closes all Kikao buffers.
 M.clear = function() Api.clear() end
