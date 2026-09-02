@@ -34,7 +34,7 @@ M.setup = function(config)
   -- Prevent sourcing at all when run via git mergetool
   if Utils.is_git_mergetool() then return end
 
-  local augroup = vim.api.nvim_create_augroup("com.mistweaverco.apps.neovim.kikao", { clear = true })
+  local augroup = vim.api.nvim_create_augroup("com.the-dont-be-evil-company.apps.neovim.kikao", { clear = true })
   local session_file_path
   local project_dir
   if config.session_file_path == nil then

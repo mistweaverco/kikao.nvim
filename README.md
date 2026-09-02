@@ -53,7 +53,7 @@ See: [lazy.nvim](https://github.com/folke/lazy.nvim)
 
 ```lua
 {
-  'mistweaverco/kikao.nvim',
+  'dont-be-evil-company/kikao.nvim',
   version = 'v3.5.0',
   opts = {}
 },
@@ -69,7 +69,7 @@ See: [packer.nvim](https://github.com/wbthomason/packer.nvim)
 
 ```lua
 use {
-  'mistweaverco/kikao.nvim',
+  'dont-be-evil-company/kikao.nvim',
   tag = 'v3.5.0',
   config = function()
     require('kikao').setup({})
@@ -85,7 +85,7 @@ use {
 
 ```lua
 vim.pack.add({
-  src = 'https://github.com/mistweaverco/kikao.nvim.git',
+  src = 'https://github.com/dont-be-evil-company/kikao.nvim.git',
   version = 'v3.5.0',
 })
 require('kikao').setup({})
@@ -240,11 +240,11 @@ the exposed `kikao.api.get_value` function is
 [badge-development-status]: assets/badge-development-status.svg
 [badge-our-manifesto]: assets/badge-our-manifesto.svg
 [badge-made-with-love]: assets/badge-made-with-love.svg
-[badge-latest-release]: https://img.shields.io/github/v/release/mistweaverco/kikao.nvim?style=for-the-badge
-[our-manifesto]: https://mistweaverco.com/manifesto
-[development-status]: https://mistweaverco.com/roadmap?filter=kikao.nvim
-[contributors]: https://github.com/mistweaverco/kikao.nvim/graphs/contributors
+[badge-latest-release]: https://img.shields.io/github/v/release/dont-be-evil-company/kikao.nvim?style=for-the-badge
+[our-manifesto]: https://the-dont-be-evil-company.com/manifesto
+[development-status]: https://the-dont-be-evil-company.com/roadmap?filter=kikao.nvim
+[contributors]: https://github.com/dont-be-evil-company/kikao.nvim/graphs/contributors
 [logo]: assets/logo.svg
 [swahili]: https://en.wikipedia.org/wiki/Swahili_language
-[latest-release]: https://github.com/mistweaverco/kikao.nvim/releases/latest
-[api-other-plugins-set]: https://github.com/mistweaverco/bafa.nvim/blob/e051e06dc250baf703c2a9d5327a9e8ace0c9f7f/lua/bafa/utils/state.lua#L300
+[latest-release]: https://github.com/dont-be-evil-company/kikao.nvim/releases/latest
+[api-other-plugins-set]: https://github.com/dont-be-evil-company/bafa.nvim/blob/e051e06dc250baf703c2a9d5327a9e8ace0c9f7f/lua/bafa/utils/state.lua#L300

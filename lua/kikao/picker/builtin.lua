@@ -1,4 +1,4 @@
--- Fuzzy finder adapted from jujutsu.nvim (MIT, Copyright 2026+ mistweaverco)
+-- Fuzzy finder adapted from jujutsu.nvim (MIT, Copyright 2026+ The Don't Be Evil Company)
 
 local M = {}
 
