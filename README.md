@@ -37,8 +37,7 @@ So you have your window layout and buffers just as you left them.
 
 ## Requirements
 
-- Neovim 0.11.5+
-  (tested on 0.11.5, may work on earlier versions but not guaranteed)
+- Neovim 0.12+ (needs `restart` command for `require("kikao").pick()` to work)
 
 ## Install
 
@@ -55,7 +54,7 @@ See: [lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
 {
   'mistweaverco/kikao.nvim',
-  version = 'v3.3.4',
+  version = 'v3.5.0',
   opts = {}
 },
 ```
@@ -71,7 +70,7 @@ See: [packer.nvim](https://github.com/wbthomason/packer.nvim)
 ```lua
 use {
   'mistweaverco/kikao.nvim',
-  tag = 'v3.3.4',
+  tag = 'v3.5.0',
   config = function()
     require('kikao').setup({})
   end
@@ -87,7 +86,7 @@ use {
 ```lua
 vim.pack.add({
   src = 'https://github.com/mistweaverco/kikao.nvim.git',
-  version = 'v3.3.4',
+  version = 'v3.5.0',
 })
 require('kikao').setup({})
 ```
@@ -211,6 +210,24 @@ the exposed `kikao.api.get_value` function is
       prefix your keys with your plugin name like so:
       `my_plugin_name.my.nested.key`
       Values are serialized to JSON.
+    - `require("kikao.api").list(): KikaoSession[]` - Returns known
+      sessions from cache metadata as a list of tables with
+      `project_dir`, `display`, and `current` fields.
+      Sessions whose project directory no longer exists are skipped.
+      Custom `session_file_path` sessions are not listed.
+    - `require("kikao.api").pick(): void` - Same as `require("kikao").pick()`.
+- `require("kikao").pick()` - Opens a fuzzy picker of known sessions.
+  Auto-detects [fzf-lua](https://github.com/ibhagwan/fzf-lua),
+  [fzf.vim](https://github.com/junegunn/fzf.vim),
+  [mini.pick](https://github.com/nvim-mini/mini.pick), or
+  [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim),
+  and falls back to a built-in picker.
+  Selecting a session prompts to save or discard unsaved file buffers,
+  persists the current session, then restarts Neovim in the project
+  directory via `:restart`. Before restart, kikao runs `$SHELL -lic`
+  in that directory and applies the resulting environment, so the same
+  shell setup as a new terminal (hooks, direnv, mise, nvm, ...) is used.
+  Unix with `:restart` (Neovim 0.12+).
 - `require("kikao").clear()` - Clears the current project's session file.
   Also closes all buffers.
 - `require("kikao").clear_all()` - Clears all session files.

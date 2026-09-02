@@ -15,6 +15,13 @@ M.clear = function() Api.clear() end
 ---Clears all cached data and closes all Kikao buffers.
 M.clear_all = function() Api.clear_all() end
 
+---List known Kikao sessions from cache metadata.
+---@return KikaoSession[]
+M.list = function() return Api.list() end
+
+---Open a fuzzy picker of known sessions and switch on selection.
+M.pick = function() Api.pick() end
+
 ---Prints the current Kikao version and Neovim version to the log.
 M.version = function()
   local neovim_version = vim.fn.execute("version") or "Unknown"

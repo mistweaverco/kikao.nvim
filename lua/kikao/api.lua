@@ -4,6 +4,8 @@
 ---@field clear_all fun(): nil
 ---@field get_value fun(opts: KikaoAPIGetValueOpts): any|nil
 ---@field set_value fun(opts: KikaoAPISetValueOpts): boolean
+---@field list fun(): KikaoSession[]
+---@field pick fun(): nil
 
 local M = {}
 
@@ -76,6 +78,13 @@ M.set_value = function(opts)
   if not project_root then return false end
   return utils.write_project_metadata(project_root, { [opts.key] = opts.value })
 end
+
+---List known Kikao sessions from cache metadata.
+---@return KikaoSession[]
+M.list = function() return require("kikao.sessions").list() end
+
+---Open a fuzzy picker of known sessions and switch on selection.
+M.pick = function() require("kikao.sessions").pick() end
 
 ---@return KikaoAPI
 return M
